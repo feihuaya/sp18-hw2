@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.lang.*;
 
 public class GlobeSortClient {
 
@@ -39,14 +40,23 @@ public class GlobeSortClient {
     }
 
     public void run(Integer[] values) throws Exception {
+        long start, end;
         System.out.println("Pinging " + serverStr + "...");
+        start = System.currentTimeMillis();
         serverStub.ping(Empty.newBuilder().build());
+        end = System.currentTimeMillis();
         System.out.println("Ping successful.");
+        System.out.println("Latency:");
+        System.out.println(end-start);
 
         System.out.println("Requesting server to sort array");
         IntArray request = IntArray.newBuilder().addAllValues(Arrays.asList(values)).build();
+        start = System.currentTimeMillis();
         IntArray response = serverStub.sortIntegers(request);
+        end = System.currentTimeMillis();
         System.out.println("Sorted array");
+        System.out.println("Overall sort application time:");
+        System.out.println(end-start);
     }
 
     public void shutdown() throws InterruptedException {
